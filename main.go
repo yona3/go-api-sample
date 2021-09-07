@@ -12,7 +12,7 @@ const PORT = "8080"
 func main() {
 	postController := controllers.NewPostController()
 
-	http.HandleFunc("/todos", postController.Index)
+	http.HandleFunc("/posts", postController.Index)
 	log.Println("server running on port " + PORT)
 	http.ListenAndServe(":"+PORT, nil)
 }
