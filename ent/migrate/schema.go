@@ -11,6 +11,9 @@ var (
 	// PostsColumns holds the columns for the "posts" table.
 	PostsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "text", Type: field.TypeString, Size: 255},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "user_name", Type: field.TypeString, Size: 20},
 	}
 	// PostsTable holds the schema information for the "posts" table.
 	PostsTable = &schema.Table{

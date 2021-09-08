@@ -249,6 +249,19 @@ func (pq *PostQuery) Clone() *PostQuery {
 
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		Text string `json:"text,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.Post.Query().
+//		GroupBy(post.FieldText).
+//		Aggregate(ent.Count()).
+//		Scan(ctx, &v)
+//
 func (pq *PostQuery) GroupBy(field string, fields ...string) *PostGroupBy {
 	group := &PostGroupBy{config: pq.config}
 	group.fields = append([]string{field}, fields...)
@@ -263,6 +276,17 @@ func (pq *PostQuery) GroupBy(field string, fields ...string) *PostGroupBy {
 
 // Select allows the selection one or more fields/columns for the given query,
 // instead of selecting all fields in the entity.
+//
+// Example:
+//
+//	var v []struct {
+//		Text string `json:"text,omitempty"`
+//	}
+//
+//	client.Post.Query().
+//		Select(post.FieldText).
+//		Scan(ctx, &v)
+//
 func (pq *PostQuery) Select(fields ...string) *PostSelect {
 	pq.fields = append(pq.fields, fields...)
 	return &PostSelect{PostQuery: pq}

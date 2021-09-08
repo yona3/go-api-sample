@@ -3,6 +3,8 @@
 package post
 
 import (
+	"time"
+
 	"entgo.io/ent/dialect/sql"
 	"github.com/yona3/go-api-sample/ent/predicate"
 )
@@ -87,6 +89,325 @@ func IDLT(id int) predicate.Post {
 func IDLTE(id int) predicate.Post {
 	return predicate.Post(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldID), id))
+	})
+}
+
+// Text applies equality check predicate on the "text" field. It's identical to TextEQ.
+func Text(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldText), v))
+	})
+}
+
+// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
+func CreatedAt(v time.Time) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCreatedAt), v))
+	})
+}
+
+// UserName applies equality check predicate on the "user_name" field. It's identical to UserNameEQ.
+func UserName(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldUserName), v))
+	})
+}
+
+// TextEQ applies the EQ predicate on the "text" field.
+func TextEQ(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldText), v))
+	})
+}
+
+// TextNEQ applies the NEQ predicate on the "text" field.
+func TextNEQ(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldText), v))
+	})
+}
+
+// TextIn applies the In predicate on the "text" field.
+func TextIn(vs ...string) predicate.Post {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Post(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldText), v...))
+	})
+}
+
+// TextNotIn applies the NotIn predicate on the "text" field.
+func TextNotIn(vs ...string) predicate.Post {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Post(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldText), v...))
+	})
+}
+
+// TextGT applies the GT predicate on the "text" field.
+func TextGT(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldText), v))
+	})
+}
+
+// TextGTE applies the GTE predicate on the "text" field.
+func TextGTE(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldText), v))
+	})
+}
+
+// TextLT applies the LT predicate on the "text" field.
+func TextLT(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldText), v))
+	})
+}
+
+// TextLTE applies the LTE predicate on the "text" field.
+func TextLTE(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldText), v))
+	})
+}
+
+// TextContains applies the Contains predicate on the "text" field.
+func TextContains(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldText), v))
+	})
+}
+
+// TextHasPrefix applies the HasPrefix predicate on the "text" field.
+func TextHasPrefix(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldText), v))
+	})
+}
+
+// TextHasSuffix applies the HasSuffix predicate on the "text" field.
+func TextHasSuffix(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldText), v))
+	})
+}
+
+// TextEqualFold applies the EqualFold predicate on the "text" field.
+func TextEqualFold(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldText), v))
+	})
+}
+
+// TextContainsFold applies the ContainsFold predicate on the "text" field.
+func TextContainsFold(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldText), v))
+	})
+}
+
+// CreatedAtEQ applies the EQ predicate on the "created_at" field.
+func CreatedAtEQ(v time.Time) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCreatedAt), v))
+	})
+}
+
+// CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
+func CreatedAtNEQ(v time.Time) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldCreatedAt), v))
+	})
+}
+
+// CreatedAtIn applies the In predicate on the "created_at" field.
+func CreatedAtIn(vs ...time.Time) predicate.Post {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Post(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldCreatedAt), v...))
+	})
+}
+
+// CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
+func CreatedAtNotIn(vs ...time.Time) predicate.Post {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Post(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldCreatedAt), v...))
+	})
+}
+
+// CreatedAtGT applies the GT predicate on the "created_at" field.
+func CreatedAtGT(v time.Time) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldCreatedAt), v))
+	})
+}
+
+// CreatedAtGTE applies the GTE predicate on the "created_at" field.
+func CreatedAtGTE(v time.Time) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldCreatedAt), v))
+	})
+}
+
+// CreatedAtLT applies the LT predicate on the "created_at" field.
+func CreatedAtLT(v time.Time) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldCreatedAt), v))
+	})
+}
+
+// CreatedAtLTE applies the LTE predicate on the "created_at" field.
+func CreatedAtLTE(v time.Time) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldCreatedAt), v))
+	})
+}
+
+// UserNameEQ applies the EQ predicate on the "user_name" field.
+func UserNameEQ(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldUserName), v))
+	})
+}
+
+// UserNameNEQ applies the NEQ predicate on the "user_name" field.
+func UserNameNEQ(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldUserName), v))
+	})
+}
+
+// UserNameIn applies the In predicate on the "user_name" field.
+func UserNameIn(vs ...string) predicate.Post {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Post(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldUserName), v...))
+	})
+}
+
+// UserNameNotIn applies the NotIn predicate on the "user_name" field.
+func UserNameNotIn(vs ...string) predicate.Post {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Post(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldUserName), v...))
+	})
+}
+
+// UserNameGT applies the GT predicate on the "user_name" field.
+func UserNameGT(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldUserName), v))
+	})
+}
+
+// UserNameGTE applies the GTE predicate on the "user_name" field.
+func UserNameGTE(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldUserName), v))
+	})
+}
+
+// UserNameLT applies the LT predicate on the "user_name" field.
+func UserNameLT(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldUserName), v))
+	})
+}
+
+// UserNameLTE applies the LTE predicate on the "user_name" field.
+func UserNameLTE(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldUserName), v))
+	})
+}
+
+// UserNameContains applies the Contains predicate on the "user_name" field.
+func UserNameContains(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldUserName), v))
+	})
+}
+
+// UserNameHasPrefix applies the HasPrefix predicate on the "user_name" field.
+func UserNameHasPrefix(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldUserName), v))
+	})
+}
+
+// UserNameHasSuffix applies the HasSuffix predicate on the "user_name" field.
+func UserNameHasSuffix(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldUserName), v))
+	})
+}
+
+// UserNameEqualFold applies the EqualFold predicate on the "user_name" field.
+func UserNameEqualFold(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldUserName), v))
+	})
+}
+
+// UserNameContainsFold applies the ContainsFold predicate on the "user_name" field.
+func UserNameContainsFold(v string) predicate.Post {
+	return predicate.Post(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldUserName), v))
 	})
 }
 

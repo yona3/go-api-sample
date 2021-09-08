@@ -6,9 +6,12 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"time"
+
+	"github.com/yona3/go-api-sample/ent/post"
+	"github.com/yona3/go-api-sample/ent/predicate"
 
 	"entgo.io/ent"
-	"github.com/yona3/go-api-sample/ent/predicate"
 )
 
 const (
@@ -29,6 +32,9 @@ type PostMutation struct {
 	op            Op
 	typ           string
 	id            *int
+	text          *string
+	created_at    *time.Time
+	user_name     *string
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*Post, error)
@@ -105,6 +111,12 @@ func (m PostMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Post entities.
+func (m *PostMutation) SetID(id int) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
 func (m *PostMutation) ID() (id int, exists bool) {
@@ -112,6 +124,114 @@ func (m *PostMutation) ID() (id int, exists bool) {
 		return
 	}
 	return *m.id, true
+}
+
+// SetText sets the "text" field.
+func (m *PostMutation) SetText(s string) {
+	m.text = &s
+}
+
+// Text returns the value of the "text" field in the mutation.
+func (m *PostMutation) Text() (r string, exists bool) {
+	v := m.text
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldText returns the old "text" field's value of the Post entity.
+// If the Post object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PostMutation) OldText(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldText is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldText requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldText: %w", err)
+	}
+	return oldValue.Text, nil
+}
+
+// ResetText resets all changes to the "text" field.
+func (m *PostMutation) ResetText() {
+	m.text = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *PostMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *PostMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Post entity.
+// If the Post object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PostMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *PostMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUserName sets the "user_name" field.
+func (m *PostMutation) SetUserName(s string) {
+	m.user_name = &s
+}
+
+// UserName returns the value of the "user_name" field in the mutation.
+func (m *PostMutation) UserName() (r string, exists bool) {
+	v := m.user_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserName returns the old "user_name" field's value of the Post entity.
+// If the Post object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PostMutation) OldUserName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldUserName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldUserName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserName: %w", err)
+	}
+	return oldValue.UserName, nil
+}
+
+// ResetUserName resets all changes to the "user_name" field.
+func (m *PostMutation) ResetUserName() {
+	m.user_name = nil
 }
 
 // Where appends a list predicates to the PostMutation builder.
@@ -133,7 +253,16 @@ func (m *PostMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *PostMutation) Fields() []string {
-	fields := make([]string, 0, 0)
+	fields := make([]string, 0, 3)
+	if m.text != nil {
+		fields = append(fields, post.FieldText)
+	}
+	if m.created_at != nil {
+		fields = append(fields, post.FieldCreatedAt)
+	}
+	if m.user_name != nil {
+		fields = append(fields, post.FieldUserName)
+	}
 	return fields
 }
 
@@ -141,6 +270,14 @@ func (m *PostMutation) Fields() []string {
 // return value indicates that this field was not set, or was not defined in the
 // schema.
 func (m *PostMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case post.FieldText:
+		return m.Text()
+	case post.FieldCreatedAt:
+		return m.CreatedAt()
+	case post.FieldUserName:
+		return m.UserName()
+	}
 	return nil, false
 }
 
@@ -148,6 +285,14 @@ func (m *PostMutation) Field(name string) (ent.Value, bool) {
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
 func (m *PostMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case post.FieldText:
+		return m.OldText(ctx)
+	case post.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case post.FieldUserName:
+		return m.OldUserName(ctx)
+	}
 	return nil, fmt.Errorf("unknown Post field %s", name)
 }
 
@@ -156,6 +301,27 @@ func (m *PostMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *PostMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case post.FieldText:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetText(v)
+		return nil
+	case post.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case post.FieldUserName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserName(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Post field %s", name)
 }
@@ -177,6 +343,8 @@ func (m *PostMutation) AddedField(name string) (ent.Value, bool) {
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
 func (m *PostMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown Post numeric field %s", name)
 }
 
@@ -202,6 +370,17 @@ func (m *PostMutation) ClearField(name string) error {
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
 func (m *PostMutation) ResetField(name string) error {
+	switch name {
+	case post.FieldText:
+		m.ResetText()
+		return nil
+	case post.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case post.FieldUserName:
+		m.ResetUserName()
+		return nil
+	}
 	return fmt.Errorf("unknown Post field %s", name)
 }
 

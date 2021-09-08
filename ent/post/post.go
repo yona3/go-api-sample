@@ -2,11 +2,21 @@
 
 package post
 
+import (
+	"time"
+)
+
 const (
 	// Label holds the string label denoting the post type in the database.
 	Label = "post"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldText holds the string denoting the text field in the database.
+	FieldText = "text"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUserName holds the string denoting the user_name field in the database.
+	FieldUserName = "user_name"
 	// Table holds the table name of the post in the database.
 	Table = "posts"
 )
@@ -14,6 +24,9 @@ const (
 // Columns holds all SQL columns for post fields.
 var Columns = []string{
 	FieldID,
+	FieldText,
+	FieldCreatedAt,
+	FieldUserName,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -25,3 +38,14 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// TextValidator is a validator for the "text" field. It is called by the builders before save.
+	TextValidator func(string) error
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
+	// UserNameValidator is a validator for the "user_name" field. It is called by the builders before save.
+	UserNameValidator func(string) error
+	// IDValidator is a validator for the "id" field. It is called by the builders before save.
+	IDValidator func(int) error
+)

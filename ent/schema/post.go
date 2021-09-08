@@ -14,11 +14,12 @@ type Post struct {
 
 // Fields of the Post.
 func (Post) Fields() []ent.Field {
-	field.Int("id").Positive().Unique()
-	field.String("text").MaxLen(255).NotEmpty()
-	field.Time("created_at").Default(time.Now)
-	field.String("user_name").MaxLen(20).NotEmpty()
-	return nil
+	return []ent.Field{
+		field.Int("id").Positive().Unique(),
+		field.String("text").MaxLen(255).NotEmpty(),
+		field.Time("created_at").Default(time.Now),
+		field.String("user_name").MaxLen(20).NotEmpty(),
+	}
 }
 
 // Edges of the Post.

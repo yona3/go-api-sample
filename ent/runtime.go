@@ -2,8 +2,61 @@
 
 package ent
 
+import (
+	"time"
+
+	"github.com/yona3/go-api-sample/ent/post"
+	"github.com/yona3/go-api-sample/ent/schema"
+)
+
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	postFields := schema.Post{}.Fields()
+	_ = postFields
+	// postDescText is the schema descriptor for text field.
+	postDescText := postFields[1].Descriptor()
+	// post.TextValidator is a validator for the "text" field. It is called by the builders before save.
+	post.TextValidator = func() func(string) error {
+		validators := postDescText.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(text string) error {
+			for _, fn := range fns {
+				if err := fn(text); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// postDescCreatedAt is the schema descriptor for created_at field.
+	postDescCreatedAt := postFields[2].Descriptor()
+	// post.DefaultCreatedAt holds the default value on creation for the created_at field.
+	post.DefaultCreatedAt = postDescCreatedAt.Default.(func() time.Time)
+	// postDescUserName is the schema descriptor for user_name field.
+	postDescUserName := postFields[3].Descriptor()
+	// post.UserNameValidator is a validator for the "user_name" field. It is called by the builders before save.
+	post.UserNameValidator = func() func(string) error {
+		validators := postDescUserName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(user_name string) error {
+			for _, fn := range fns {
+				if err := fn(user_name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// postDescID is the schema descriptor for id field.
+	postDescID := postFields[0].Descriptor()
+	// post.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	post.IDValidator = postDescID.Validators[0].(func(int) error)
 }

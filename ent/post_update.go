@@ -5,6 +5,7 @@ package ent
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -26,6 +27,32 @@ func (pu *PostUpdate) Where(ps ...predicate.Post) *PostUpdate {
 	return pu
 }
 
+// SetText sets the "text" field.
+func (pu *PostUpdate) SetText(s string) *PostUpdate {
+	pu.mutation.SetText(s)
+	return pu
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (pu *PostUpdate) SetCreatedAt(t time.Time) *PostUpdate {
+	pu.mutation.SetCreatedAt(t)
+	return pu
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (pu *PostUpdate) SetNillableCreatedAt(t *time.Time) *PostUpdate {
+	if t != nil {
+		pu.SetCreatedAt(*t)
+	}
+	return pu
+}
+
+// SetUserName sets the "user_name" field.
+func (pu *PostUpdate) SetUserName(s string) *PostUpdate {
+	pu.mutation.SetUserName(s)
+	return pu
+}
+
 // Mutation returns the PostMutation object of the builder.
 func (pu *PostUpdate) Mutation() *PostMutation {
 	return pu.mutation
@@ -38,12 +65,18 @@ func (pu *PostUpdate) Save(ctx context.Context) (int, error) {
 		affected int
 	)
 	if len(pu.hooks) == 0 {
+		if err = pu.check(); err != nil {
+			return 0, err
+		}
 		affected, err = pu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*PostMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = pu.check(); err != nil {
+				return 0, err
 			}
 			pu.mutation = mutation
 			affected, err = pu.sqlSave(ctx)
@@ -85,6 +118,21 @@ func (pu *PostUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (pu *PostUpdate) check() error {
+	if v, ok := pu.mutation.Text(); ok {
+		if err := post.TextValidator(v); err != nil {
+			return &ValidationError{Name: "text", err: fmt.Errorf("ent: validator failed for field \"text\": %w", err)}
+		}
+	}
+	if v, ok := pu.mutation.UserName(); ok {
+		if err := post.UserNameValidator(v); err != nil {
+			return &ValidationError{Name: "user_name", err: fmt.Errorf("ent: validator failed for field \"user_name\": %w", err)}
+		}
+	}
+	return nil
+}
+
 func (pu *PostUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -103,6 +151,27 @@ func (pu *PostUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := pu.mutation.Text(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: post.FieldText,
+		})
+	}
+	if value, ok := pu.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: post.FieldCreatedAt,
+		})
+	}
+	if value, ok := pu.mutation.UserName(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: post.FieldUserName,
+		})
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, pu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{post.Label}
@@ -120,6 +189,32 @@ type PostUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *PostMutation
+}
+
+// SetText sets the "text" field.
+func (puo *PostUpdateOne) SetText(s string) *PostUpdateOne {
+	puo.mutation.SetText(s)
+	return puo
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (puo *PostUpdateOne) SetCreatedAt(t time.Time) *PostUpdateOne {
+	puo.mutation.SetCreatedAt(t)
+	return puo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (puo *PostUpdateOne) SetNillableCreatedAt(t *time.Time) *PostUpdateOne {
+	if t != nil {
+		puo.SetCreatedAt(*t)
+	}
+	return puo
+}
+
+// SetUserName sets the "user_name" field.
+func (puo *PostUpdateOne) SetUserName(s string) *PostUpdateOne {
+	puo.mutation.SetUserName(s)
+	return puo
 }
 
 // Mutation returns the PostMutation object of the builder.
@@ -141,12 +236,18 @@ func (puo *PostUpdateOne) Save(ctx context.Context) (*Post, error) {
 		node *Post
 	)
 	if len(puo.hooks) == 0 {
+		if err = puo.check(); err != nil {
+			return nil, err
+		}
 		node, err = puo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*PostMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = puo.check(); err != nil {
+				return nil, err
 			}
 			puo.mutation = mutation
 			node, err = puo.sqlSave(ctx)
@@ -188,6 +289,21 @@ func (puo *PostUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (puo *PostUpdateOne) check() error {
+	if v, ok := puo.mutation.Text(); ok {
+		if err := post.TextValidator(v); err != nil {
+			return &ValidationError{Name: "text", err: fmt.Errorf("ent: validator failed for field \"text\": %w", err)}
+		}
+	}
+	if v, ok := puo.mutation.UserName(); ok {
+		if err := post.UserNameValidator(v); err != nil {
+			return &ValidationError{Name: "user_name", err: fmt.Errorf("ent: validator failed for field \"user_name\": %w", err)}
+		}
+	}
+	return nil
+}
+
 func (puo *PostUpdateOne) sqlSave(ctx context.Context) (_node *Post, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -222,6 +338,27 @@ func (puo *PostUpdateOne) sqlSave(ctx context.Context) (_node *Post, err error) 
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := puo.mutation.Text(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: post.FieldText,
+		})
+	}
+	if value, ok := puo.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: post.FieldCreatedAt,
+		})
+	}
+	if value, ok := puo.mutation.UserName(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: post.FieldUserName,
+		})
 	}
 	_node = &Post{config: puo.config}
 	_spec.Assign = _node.assignValues

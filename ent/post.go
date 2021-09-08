@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/yona3/go-api-sample/ent/post"
@@ -12,9 +13,15 @@ import (
 
 // Post is the model entity for the Post schema.
 type Post struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// Text holds the value of the "text" field.
+	Text string `json:"text,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UserName holds the value of the "user_name" field.
+	UserName string `json:"user_name,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -24,6 +31,10 @@ func (*Post) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case post.FieldID:
 			values[i] = new(sql.NullInt64)
+		case post.FieldText, post.FieldUserName:
+			values[i] = new(sql.NullString)
+		case post.FieldCreatedAt:
+			values[i] = new(sql.NullTime)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Post", columns[i])
 		}
@@ -45,6 +56,24 @@ func (po *Post) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			po.ID = int(value.Int64)
+		case post.FieldText:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field text", values[i])
+			} else if value.Valid {
+				po.Text = value.String
+			}
+		case post.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				po.CreatedAt = value.Time
+			}
+		case post.FieldUserName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field user_name", values[i])
+			} else if value.Valid {
+				po.UserName = value.String
+			}
 		}
 	}
 	return nil
@@ -73,6 +102,12 @@ func (po *Post) String() string {
 	var builder strings.Builder
 	builder.WriteString("Post(")
 	builder.WriteString(fmt.Sprintf("id=%v", po.ID))
+	builder.WriteString(", text=")
+	builder.WriteString(po.Text)
+	builder.WriteString(", created_at=")
+	builder.WriteString(po.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", user_name=")
+	builder.WriteString(po.UserName)
 	builder.WriteByte(')')
 	return builder.String()
 }
