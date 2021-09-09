@@ -38,17 +38,14 @@ func (c *PostController) Index(ctx context.Context, w http.ResponseWriter, r *ht
 	switch r.Method {
 	case "GET":
 		c.getPosts(ctx, w, r)
-		return
 	case "POST":
 		c.createPost(ctx, w, r)
-		return
 	case "DELETE":
 		c.deletePost(ctx, w, r, id)
 	default:
 		log.Print("Method is not allowed.")
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		w.Write([]byte("Method not allowed"))
-		return
 	}
 }
 
