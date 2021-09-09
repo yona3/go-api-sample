@@ -38,6 +38,7 @@ func (c *PostController) Index(ctx context.Context, w http.ResponseWriter, r *ht
 func (c *PostController) getPosts(ctx context.Context, w http.ResponseWriter, _ *http.Request) {
 	db := database.GetClient()
 
+	// get posts
 	posts, err := db.Post.Query().All(ctx)
 	if err != nil {
 		log.Println(err)
@@ -46,6 +47,7 @@ func (c *PostController) getPosts(ctx context.Context, w http.ResponseWriter, _ 
 		return
 	}
 
+	// marshal posts
 	jsonBytes, err := json.Marshal(posts)
 	if err != nil {
 		log.Println(err)
