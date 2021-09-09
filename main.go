@@ -21,6 +21,7 @@ func main() {
 	postController := controllers.NewPostController()
 
 	http.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) { postController.Index(ctx, w, r) })
+	http.HandleFunc("/posts/", func(w http.ResponseWriter, r *http.Request) { postController.Index(ctx, w, r) })
 	log.Println("server running on port " + PORT)
 	http.ListenAndServe(":"+PORT, nil)
 }
